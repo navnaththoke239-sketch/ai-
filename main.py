@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(_name_)
@@ -6,24 +6,49 @@ CORS(app)
 
 @app.route("/")
 def home():
-    return jsonify({"message": "✅ Chal raha hai!", "status": "success"})
+    return jsonify({
+        "status": "success",
+        "message": "AI Video App Backend is running"
+    })
 
 @app.route("/signup", methods=["POST"])
 def signup():
-    data = request.json
+    data = request.get_json() or {}
+
+    username = data.get("username")
+    password = data.get("password")
+
+    if not username or not password:
+        return jsonify({
+            "success": False,
+            "message": "Username and password required"
+        }), 400
+
     return jsonify({
-        "message": "✅ Signup Success!",
-        "name": data.get("name"),
-        "email": data.get("email")
+        "success": True,
+        "message": "Signup successful"
     })
 
 @app.route("/login", methods=["POST"])
 def login():
-    data = request.json
+    data = request.get_json() or {}
+
+    username = data.get("username")
+    password = data.get("password")
+
+    if not username or not password:
+        return jsonify({
+            "success": False,
+            "message": "Username and password required"
+        }), 400
+
     return jsonify({
-        "message": "✅ Login Success!",
-        "email": data.get("email")
+        "success": True,
+        "message": "Login successful"
     })
 
+# Online hosting साठी
 if _name_ == "_main_":
-    app.run(host="0.0.0.0", port=5000)
+    import os
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
